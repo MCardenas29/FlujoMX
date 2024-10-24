@@ -8,6 +8,7 @@
     pkgs.jdk17
     pkgs.unzip
     pkgs.lazygit
+    pkgs.openssh
   ];
   # Sets environment variables in the workspace
   env = {};
