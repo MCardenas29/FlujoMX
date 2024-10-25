@@ -1,25 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:workmanager/workmanager.dart';
+import 'services/flow.dart';
 import 'util.dart';
 import 'theme.dart';
-import 'dart:developer';
 
-@pragma("vm:entry-point")
-void dispatcherCallback() {
-  Workmanager().executeTask((task, inputData) async {
-    log("Dispatcher callback");
-    return Future.value(true);
-  });
-}
+const notificationChannelId = 'mx.ucol.flujomx.waterflow';
+const notificationId = 899;
 
-void main() {
-  Workmanager().initialize(dispatcherCallback, isInDebugMode: true);
-  Workmanager().registerPeriodicTask(
-    "mx.ucol.flujomx.flow_update",
-    "update_flow",
-    frequency: const Duration(seconds: 5),
-  );
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initServices();
+
   runApp(const MyApp());
 }
 
