@@ -1,20 +1,15 @@
 class Flow {
-  final int id;
   final DateTime timestamp;
   final double value;
 
-  const Flow({this.id = 0, required this.timestamp, required this.value});
+  const Flow({required this.timestamp, required this.value});
 
   Map<String, Object?> toMap() {
-    return {
-      'id': id,
-      'timestamp': timestamp.millisecondsSinceEpoch,
-      'value': value
-    };
+    return {'timestamp': timestamp.millisecondsSinceEpoch, 'value': value};
   }
 
   @override
   String toString() {
-    return "Flow {id: $id, value: $value, timestamp: $timestamp}";
+    return "Flow {value: $value, timestamp: $timestamp}";
   }
 }

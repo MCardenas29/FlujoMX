@@ -3,15 +3,23 @@ import 'package:fl_chart/fl_chart.dart';
 import 'services/flow.dart';
 import 'util.dart';
 import 'theme.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 const notificationChannelId = 'mx.ucol.flujomx.waterflow';
 const notificationId = 899;
+
+FlutterLocalNotificationsPlugin notificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initServices();
 
   runApp(const MyApp());
+  notificationsPlugin
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
+      ?.requestNotificationsPermission();
 }
 
 class MyApp extends StatelessWidget {
@@ -48,6 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Container(
           height: 300,
+          padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
           child: BarChart(BarChartData(barGroups: [
             BarChartGroupData(
                 x: 0, barRods: [BarChartRodData(toY: 2, color: Colors.red)]),
