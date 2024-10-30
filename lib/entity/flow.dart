@@ -3,7 +3,7 @@ class Flow {
   final DateTime timestamp;
   final double value;
 
-  const Flow({required this.id, required this.timestamp, required this.value});
+  const Flow({this.id = 0, required this.timestamp, required this.value});
 
   Map<String, Object?> toMap() {
     return {
