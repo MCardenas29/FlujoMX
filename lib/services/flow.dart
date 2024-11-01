@@ -7,9 +7,10 @@ import 'package:FlujoMX/entity/flow.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-final client = MqttServerClient.withPort("10.0.2.2", "client-1", 1883);
 const channelId = "flowmx_usage";
 const notificationId = 889;
+
+final client = MqttServerClient.withPort("10.0.2.2", "client-1", 1883);
 const notificationDetails = NotificationDetails(
     android: AndroidNotificationDetails(channelId, "Flujo",
         icon: '@mipmap/ic_launcher',
@@ -24,7 +25,6 @@ Future<bool> initServices() async {
       channelId, 'Flujo',
       description: "Notificaciones del flujo actual",
       importance: Importance.low);
-
   return await service.configure(
     androidConfiguration: AndroidConfiguration(
         autoStart: true,
@@ -49,6 +49,7 @@ Future<void> startService(ServiceInstance service) async {
   client.subscribe("flow/add", MqttQos.atMostOnce);
 
   client.published!.listen((MqttPublishMessage message) {
+    service.invoke("test");
     final msg =
         MqttPublishPayload.bytesToStringAsString(message.payload.message);
     final flow = Flow(value: double.parse(msg), timestamp: DateTime.now());

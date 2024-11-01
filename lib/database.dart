@@ -13,5 +13,7 @@ Future<void> _onCreate(Database db, int version) async {
   if (version == 1) {
     db.execute(
         "CREATE TABLE flow(timestamp INTEGER NOT NULL, value DOUBLE NOT NULL)");
+    db.execute(
+        "CREATE TABLE user(name VARCHAR, email VARCHAR, currentFee INT)");
   }
 }
