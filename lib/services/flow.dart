@@ -42,7 +42,7 @@ Future<bool> initServices() async {
 Future<void> startService(ServiceInstance service) async {
   final FlutterLocalNotificationsPlugin notificationsPlugin =
       FlutterLocalNotificationsPlugin();
-  final database = await db.getInstance();
+  // final database = await db.getInstance();
   client.keepAlivePeriod = 20;
   var status = await client.connect();
 
@@ -52,10 +52,10 @@ Future<void> startService(ServiceInstance service) async {
     service.invoke("test");
     final msg =
         MqttPublishPayload.bytesToStringAsString(message.payload.message);
-    final flow = Flow(value: double.parse(msg), timestamp: DateTime.now());
-    database.insert("flow", flow.toMap(),
-        conflictAlgorithm: ConflictAlgorithm.replace);
-    notificationsPlugin.show(
-        notificationId, "Test", flow.value.toString(), notificationDetails);
+    // final flow = Flow(value: double.parse(msg), timestamp: DateTime.now());
+    //  database.insert("flow", flow.toMap(),
+    //      conflictAlgorithm: ConflictAlgorithm.replace);
+    // notificationsPlugin.show(
+    //    notificationId, "Test", flow.value.toString(), notificationDetails);
   });
 }

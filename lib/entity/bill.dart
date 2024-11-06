@@ -1,8 +1,8 @@
 import 'package:FlujoMX/enums.dart';
-import 'package:FlujoMX/entity/user.dart';
+import 'package:FlujoMX/entity/profile.dart';
 
 class Bill {
-  User owner;
+  Profile owner;
   Fee fee;
   DateTime startDate;
   DateTime endDate;
