@@ -3,12 +3,12 @@ import 'package:FlujoMX/entity/profile.dart';
 import 'package:FlujoMX/enums.dart';
 import 'package:email_validator/email_validator.dart';
 
-class UserForm extends StatelessWidget {
+class ProfileForm extends StatelessWidget {
   final _nameField = TextEditingController();
   final _emailField = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  UserForm({super.key});
+  ProfileForm({super.key});
 
   @override
   Widget build(BuildContext context) {

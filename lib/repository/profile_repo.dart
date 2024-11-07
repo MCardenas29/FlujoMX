@@ -1,17 +1,28 @@
 import 'package:FlujoMX/database.dart';
 import 'package:FlujoMX/entity/profile.dart';
-import 'package:FlujoMX/enums.dart';
+import 'package:sqflite/sqflite.dart';
 
-class ProfileRepo extends Repository {
+final class ProfileRepo extends Repository<Profile> {
   @override
-  String get TABLE => "profile";
+  Future<void> delete(Profile entity) async {
+    final db = await database;
+    await db
+        .delete(Profile.TABLE, where: "rowid = ?", whereArgs: [entity.rowId]);
+  }
 
   @override
-  Profile fromMap(Map<String, Object?> data) {
-    return Profile(
-        rowId: data['row_id'] as int,
-        name: data['name'] as String,
-        email: data['email'] as String,
-        currentFee: Fee.values.elementAt(data['currentFee'] as int));
+  Future<Profile?> fetch(int rowId) async {
+    final db = await database;
+    final results =
+        await db.query(Profile.TABLE, where: 'rowid = ?', whereArgs: [rowId]);
+    print(results.first);
+    return results.isEmpty ? null : Profile.fromMap(results.first);
+  }
+
+  @override
+  Future<int> save(Profile entity) async {
+    final db = await database;
+    return await db.insert(Profile.TABLE, entity.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace);
   }
 }
