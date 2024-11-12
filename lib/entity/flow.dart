@@ -4,7 +4,7 @@ class Flow extends Entity {
   DateTime timestamp;
   double value;
 
-  Flow({super.rowId, required this.timestamp, required this.value});
+  Flow({super.id, required this.timestamp, required this.value});
 
   @override
   Map<String, Object?> toMap() {

@@ -25,5 +25,6 @@ ThemeData getTheme(BuildContext context) {
   TextTheme textTheme = _createTextTheme(context, "Amaranth", "Alef");
   MaterialTheme theme = MaterialTheme(textTheme);
 
-  return brightness == Brightness.light ? theme.light() : theme.dark();
+  // return brightness == Brightness.light ? theme.light() : theme.dark();
+  return theme.light();
 }

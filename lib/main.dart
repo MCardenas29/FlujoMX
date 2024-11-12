@@ -1,48 +1,72 @@
 import 'package:FlujoMX/entity/profile.dart';
+import 'package:FlujoMX/pages/main/index.dart';
+import 'package:FlujoMX/pages/main/layout.dart';
+import 'package:FlujoMX/pages/main/notifications.dart';
+import 'package:FlujoMX/pages/main/usage/daily.dart';
+import 'package:FlujoMX/pages/setup/layout.dart';
 import 'package:FlujoMX/repository/profile_repo.dart';
-import 'package:FlujoMX/screens/index.dart';
-import 'package:FlujoMX/screens/loading.dart';
-import 'package:FlujoMX/screens/setup.dart';
 import 'package:FlujoMX/util.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  runApp(App());
+  final SharedPreferencesAsync preferences = SharedPreferencesAsync();
+  final isFirstTime = await preferences.getBool('first_time') ?? true;
+  runApp(App(doSetup: isFirstTime));
 }
 
 class App extends StatelessWidget {
-  final SharedPreferencesAsync _preferences = SharedPreferencesAsync();
-  final ProfileRepo _profileRepo = ProfileRepo();
+  App({super.key, required this.doSetup});
+  bool doSetup = true;
+  final _routerKey = GlobalKey<NavigatorState>(debugLabel: 'main');
+  final ProfileRepo profileRepo = ProfileRepo();
 
-  App({super.key});
-
-  Future<Profile?> getUser() async {
-    final isFirstTime = await _preferences.getBool('first_time') ?? true;
-    if (isFirstTime) return null;
-    final profileId = await _preferences.getInt('current_profile') ?? 0;
-    if (profileId == 0) return null;
-    final user = await _profileRepo.fetch(profileId);
-    print(user);
-    return user;
-  }
+  get _router => GoRouter(
+          initialLocation: doSetup ? '/_setup' : '/index',
+          navigatorKey: _routerKey,
+          redirect: (BuildContext ctx, GoRouterState state) async {
+            return null;
+          },
+          routes: [
+            // Setup page, this is only invoked when the app is firstly installed
+            GoRoute(
+                path: '/_setup',
+                builder: (BuildContext ctx, GoRouterState state) =>
+                    const SetupLayout()),
+            // Main page router
+            StatefulShellRoute.indexedStack(
+                builder: (BuildContext context, GoRouterState state,
+                        StatefulNavigationShell navShell) =>
+                    MainLayout(navigationShell: navShell),
+                branches: [
+                  StatefulShellBranch(routes: [
+                    GoRoute(
+                        path: MainIndex.route,
+                        builder: (BuildContext ctx, GoRouterState state) =>
+                            const MainIndex())
+                  ]),
+                  StatefulShellBranch(routes: [
+                    GoRoute(
+                        path: MainUsageDaily.route,
+                        builder: (BuildContext ctx, GoRouterState state) =>
+                            const MainUsageDaily()),
+                  ]),
+                  StatefulShellBranch(routes: [
+                    GoRoute(
+                        path: MainNotifications.route,
+                        builder: (BuildContext ctx, GoRouterState state) =>
+                            const MainNotifications())
+                  ])
+                ]),
+          ]);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'FlujoMX',
-        theme: getTheme(context),
-        home: FutureBuilder(
-          future: getUser(),
-          builder: (BuildContext context, AsyncSnapshot<Profile?> snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Loading();
-            }
-            if (snapshot.data == null) return const WelcomeSetup();
-            return const Index();
-          },
-        ));
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    return MaterialApp.router(
+        title: "FlujoMx", theme: getTheme(context), routerConfig: _router);
   }
 }
