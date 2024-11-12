@@ -11,11 +11,7 @@ class MainLayout extends StatelessWidget {
         body: navigationShell,
         bottomNavigationBar: NavigationBar(
           selectedIndex: navigationShell.currentIndex,
-          onDestinationSelected: (int index) {
-            print(index);
-            print(navigationShell.currentIndex);
-            navigationShell.goBranch(index);
-          },
+          onDestinationSelected: navigationShell.goBranch,
           destinations: const [
             NavigationDestination(
               icon: Icon(Icons.home_outlined),
