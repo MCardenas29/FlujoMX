@@ -1,4 +1,3 @@
-import 'package:FlujoMX/entity/profile.dart';
 import 'package:FlujoMX/pages/main/index.dart';
 import 'package:FlujoMX/pages/main/layout.dart';
 import 'package:FlujoMX/pages/main/notifications.dart';
