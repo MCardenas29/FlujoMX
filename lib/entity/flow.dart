@@ -1,13 +1,13 @@
-import 'package:FlujoMX/database.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+part '../generated/entity/flow.freezed.dart';
+part '../generated/entity/flow.g.dart';
 
-class Flow extends Entity {
-  DateTime timestamp;
-  double value;
+@freezed
+class Flow with _$Flow {
+  static const String TABLE = "flow";
 
-  Flow({super.id, required this.timestamp, required this.value});
+  const factory Flow(
+      {int? id, required DateTime timestamp, required double value}) = _Flow;
 
-  @override
-  Map<String, Object?> toMap() {
-    return {'timestamp': timestamp.millisecondsSinceEpoch, 'value': value};
-  }
+  factory Flow.fromJson(Map<String, Object?> json) => _$FlowFromJson(json);
 }

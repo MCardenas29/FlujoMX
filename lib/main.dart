@@ -3,27 +3,28 @@ import 'package:FlujoMX/pages/main/layout.dart';
 import 'package:FlujoMX/pages/main/notifications.dart';
 import 'package:FlujoMX/pages/main/usage/daily.dart';
 import 'package:FlujoMX/pages/setup/layout.dart';
-import 'package:FlujoMX/repository/profile_repo.dart';
+import 'package:FlujoMX/provider/database.dart';
+import 'package:FlujoMX/provider/preferences.dart';
 import 'package:FlujoMX/util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final SharedPreferencesAsync preferences = SharedPreferencesAsync();
-  final isFirstTime = await preferences.getBool('first_time') ?? true;
-  runApp(App(doSetup: isFirstTime));
+
+  final database = await openDb();
+  runApp(ProviderScope(
+      overrides: [databaseProvider.overrideWithValue(database)], child: App()));
 }
 
-class App extends StatelessWidget {
-  App({super.key, required this.doSetup});
-  bool doSetup = true;
+class App extends ConsumerWidget {
   final _routerKey = GlobalKey<NavigatorState>(debugLabel: 'main');
-  final ProfileRepo profileRepo = ProfileRepo();
 
-  get _router => GoRouter(
+  App({super.key});
+
+  GoRouter _router(bool doSetup) => GoRouter(
           initialLocation: doSetup ? '/_setup' : '/index',
           navigatorKey: _routerKey,
           redirect: (BuildContext ctx, GoRouterState state) async {
@@ -63,9 +64,13 @@ class App extends StatelessWidget {
           ]);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    final firstTime = ref.read(appFirstTimeProvider).value;
+
     return MaterialApp.router(
-        title: "FlujoMx", theme: getTheme(context), routerConfig: _router);
+        title: "FlujoMx",
+        theme: getTheme(context),
+        routerConfig: _router(firstTime ?? false));
   }
 }

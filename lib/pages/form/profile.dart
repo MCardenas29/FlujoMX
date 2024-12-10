@@ -19,7 +19,7 @@ class ProfileForm extends StatelessWidget {
         final user = Profile(
             email: _emailField.text,
             name: _nameField.text,
-            currentFee: Fee.DOM_RURAL);
+            currentFee: Fee.domRural.index);
         Navigator.pop(context, user);
       }
     }

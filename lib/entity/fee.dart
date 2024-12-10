@@ -1,8 +1,11 @@
 import 'package:FlujoMX/enums.dart';
 
-// It's max, water, sewerage, sanitation.
+// The matrix number are in the following order:
+//    max, water, sewerage, sanitation.
+// They came from a document of water usage
+// TODO: Find a better way to achieve this
 final Map<Fee, List<Range>> fees = {
-  Fee.DOM_B: Range.ranges([
+  Fee.domB: Range.ranges([
     [15, 4.573, 1.143, 0.686],
     [30, 0.171, 0.043, 0.026],
     [50, 0.195, 0.049, 0.029],
@@ -10,7 +13,7 @@ final Map<Fee, List<Range>> fees = {
     [100, 0.435, 0.109, 0.065],
     [double.infinity, 0.468, 0.117, 0.070]
   ]),
-  Fee.DOM_A: Range.ranges([
+  Fee.domA: Range.ranges([
     [15, 2.342, 0.590, 0.351],
     [30, 0.085, 0.022, 0.013],
     [50, 0.095, 0.024, 0.015],
@@ -18,7 +21,7 @@ final Map<Fee, List<Range>> fees = {
     [100, 0.228, 0.060, 0.036],
     [double.infinity, 0.457, 0.117, 0.070]
   ]),
-  Fee.DOM_RURAL: Range.ranges([
+  Fee.domRural: Range.ranges([
     [30, 1.993, 0.498, 0.299],
     [50, 0.068, 0.017, 0.010],
     [50, 0.068, 0.017, 0.010],
@@ -50,5 +53,6 @@ class Range {
       [for (var row in table) Range.fromList(row)];
 
   double get total => waterCost + sewerageCost + sanitationCost;
+  double get cost => total * maxUsage;
   bool inRange(double currentUsage) => maxUsage < currentUsage;
 }

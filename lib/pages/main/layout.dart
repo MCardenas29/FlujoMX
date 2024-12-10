@@ -1,3 +1,4 @@
+import 'package:FlujoMX/provider/mqtt.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -9,6 +10,7 @@ class MainLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         body: navigationShell,
+        appBar: AppBar(title: Text("Flujo"), centerTitle: true),
         bottomNavigationBar: NavigationBar(
           selectedIndex: navigationShell.currentIndex,
           onDestinationSelected: navigationShell.goBranch,

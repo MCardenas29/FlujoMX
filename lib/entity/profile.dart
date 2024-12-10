@@ -1,43 +1,21 @@
-import 'package:FlujoMX/database.dart';
 import 'package:FlujoMX/enums.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+part '../generated/entity/profile.freezed.dart';
+part '../generated/entity/profile.g.dart';
 
-final class Profile extends Entity {
+@freezed
+class Profile with _$Profile {
   static const String TABLE = "profile";
-  String name;
-  String email;
-  Fee currentFee;
 
-  Profile(
-      {super.id,
-      required this.name,
-      required this.email,
-      required this.currentFee});
+  const Profile._();
+  const factory Profile(
+      {int? id,
+      required String name,
+      required String email,
+      required int currentFee}) = _Profile;
 
-  @override
-  Map<String, Object?> toMap() =>
-      {"id": id, "name": name, "email": email, "currentFee": currentFee.index};
+  Fee get fee => Fee.values.elementAt(currentFee);
 
-  Profile copyWith(
-          {final int? id,
-          final String? name,
-          final String? email,
-          final Fee? currentFee}) =>
-      Profile(
-          id: id ?? this.id,
-          name: name ?? this.name,
-          email: email ?? this.email,
-          currentFee: currentFee ?? this.currentFee);
-
-  factory Profile.fromMap(Map<String, Object?> data) {
-    return Profile(
-        id: data['id'] as int,
-        name: data['name'] as String,
-        email: data['email'] as String,
-        currentFee: Fee.values.elementAt(data['currentFee'] as int));
-  }
-
-  @override
-  String toString() {
-    return "Profile {id: $id, name: $name, email: $email, fee: $currentFee}";
-  }
+  factory Profile.fromJson(Map<String, Object?> json) =>
+      _$ProfileFromJson(json);
 }

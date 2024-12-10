@@ -1,45 +1,35 @@
 import 'package:FlujoMX/entity/profile.dart';
 import 'package:FlujoMX/pages/main/index.dart';
-import 'package:FlujoMX/pages/main/layout.dart';
-import 'package:FlujoMX/repository/profile_repo.dart';
 import 'package:FlujoMX/pages/form/profile.dart';
 import 'package:FlujoMX/components/loading.dart';
+import 'package:FlujoMX/provider/preferences.dart';
+import 'package:FlujoMX/provider/profile.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-class SetupWelcomePage extends StatefulWidget {
+class SetupWelcomePage extends ConsumerWidget {
   const SetupWelcomePage({super.key});
 
   @override
-  State<StatefulWidget> createState() => _SetupWelcomePageState();
-}
-
-class _SetupWelcomePageState extends State {
-  final SharedPreferencesAsync _preferences = SharedPreferencesAsync();
-  final ProfileRepo _profileRepo = ProfileRepo();
-  Profile? _profile;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final navigator = Navigator.of(context);
     final router = GoRouter.of(context);
     final theme = Theme.of(context);
+    final currentProfile = ref.watch(currentProfileProvider);
+    final prefs = ref.read(sharedPreferencesProvider);
 
     void setupApp() async {
       Profile? result = await navigator
           .push(MaterialPageRoute(builder: (ctx) => ProfileForm()));
       if (result == null) return;
-      result = await _profileRepo.save(result);
-      setState(() => _profile = result);
-      if (result.id == 0) throw ("Error al crear el usuario");
-      await _preferences.setInt('current_profile', result.id!);
-      await _preferences.setBool('first_time', false);
+      ref.read(currentProfileProvider.notifier).changeProfile(result);
+      await prefs.setBool('first_time', true);
       router.push(MainIndex.route);
     }
 
-    return _profile == null
+    return currentProfile.value == null
         ? Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
             Container(
                 margin: const EdgeInsets.symmetric(vertical: 40.0),

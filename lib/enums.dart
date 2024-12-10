@@ -1,8 +1,8 @@
 // All fee types
-enum Fee { DOM_RURAL, DOM_A, DOM_B, COND, COM_A, COM_B, INDUSTRIAL }
+enum Fee { domRural, domA, domB, cond, comA, comB, industrial }
 
 // Service types for the background process
-enum Service { MQTT, SERVER, FIREBASE }
+enum Service { mqtt, server, firebase }
 
 // Notification types
-enum Notification { WARNING, INFO, CRITICAL }
+enum Notification { warning, info, critical }
